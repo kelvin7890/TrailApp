@@ -1,0 +1,40 @@
+class Trail:
+    def __init__(self, trail_id: int, trail_name: str, description: str,
+                 trail_activity: str, waypoints: str, length: float,
+                 location_id: int, ownership_id: int, park_id: int):
+        self.TrailID = trail_id
+        self.TrailName = trail_name
+        self.Description = description
+        self.TrailActivity = trail_activity
+        self.waypoints = waypoints
+        self.Length = length
+        self.LocationID = location_id
+        self.OwnershipID = ownership_id
+        self.ParkID = park_id
+
+class TrailLocation:
+    def __init__(self, location_id: int, location: str):
+        self.LocationID = location_id
+        self.latitude=latitude
+        self.longitude=longitude
+        self.location = location
+
+class City:
+    def __init__(self, city_id: int, location_id: int, city: str):
+        self.CityID = city_id
+        self.LocationID = location_id
+        self.city = city
+
+class Park:
+    def __init__(self, park_id: int, park: str, city_id: int):
+        self.ParkID = park_id
+        self.park = park
+        self.CityID = city_id
+
+class TrailOwnership:
+    def __init__(self, ownership_id: int, trail_ownership: str):
+        self.OwnershipID = ownership_id
+        self.Trailownership = trail_ownership
+
+
+        

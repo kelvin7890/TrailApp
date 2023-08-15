@@ -1,0 +1,93 @@
+   # Setting Up Flask Application and Database Connection
+from flask import Flask, request, jsonify
+from flask_sqlalchemy import SQLAlchemy
+from flask import Flask
+from flask_swagger_ui import get_swaggerui_blueprint
+
+
+app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'your_database_connection_string'
+db = SQLAlchemy(app)
+
+app = Flask(__name__)
+
+# Configure Swagger UI
+SWAGGER_URL = '/swagger'
+API_URL = '/swagger.json'
+swaggerui_blueprint = get_swaggerui_blueprint(
+    SWAGGER_URL,
+    API_URL,
+    config={
+        'app_name': "Trail Micro-Service"
+    }
+)
+app.register_blueprint(swaggerui_blueprint, url_prefix=SWAGGER_URL)
+
+
+if __name__ == "__main__":
+    app.run()
+# Creating a New Trail
+class Trail(db.Model):
+    __tablename__ = 'Trail'
+    TrailId = db.Column(db.Integer, primary_key=True)
+    TrailName = db.Column(db.String(100), nullable=False)
+    Description = db.Column(db.String(500))
+    Length = db.Column(db.Float)
+    LocationId = db.Column(db.Integer, db.ForeignKey('Location.LocationId'))
+    OwnershipId = db.Column(db.Integer, db.ForeignKey('TrailOwnership.OwnershipId'))
+
+@app.route('/trails', methods=['POST'])
+def create_trail():
+    data = request.get_json()
+    new_trail = Trail(
+        TrailName=data['TrailName'],
+        Description=data['Description'],
+        Length=data['Length'],
+        LocationId=data['LocationId'],
+        OwnershipId=data['OwnershipId']
+    )
+    db.session.add(new_trail)
+    db.session.commit()
+    return jsonify(message='Trail created successfully'), 201
+
+# Retrieving Trail Details
+def get_trail(trail_id):
+    trail = Trail.query.get(trail_id)
+    if not trail:
+        return jsonify(message='Trail not found'), 404
+    return jsonify({
+        'TrailName': trail.TrailName,
+        'Description': trail.Description,
+        'Length': trail.Length,
+        'Location': {
+            'LocationName': trail.Location.LocationName,
+            'City': trail.Location.City
+        },
+        'Ownership': {
+            'Ownership': trail.TrailOwnership.Ownership
+        }
+    }), 200
+
+
+
+    # Testing the code 
+    import unittest
+from your_micro_service import app  # Import your Flask app
+
+class TestTrailService(unittest.TestCase):
+
+    def setUp(self):
+        self.app = app.test_client()
+    
+    def test_create_trail(self):
+        response = self.app.post('/trails', json={'TrailName': 'New Trail'})
+        self.assertEqual(response.status_code, 201)
+        self.assertIn('New Trail', response.json['TrailName'])
+
+    def test_get_trail(self):
+        response = self.app.get('/trails/101')
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('Angels Landing', response.json['TrailName'])
+
+
+

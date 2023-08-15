@@ -1,4 +1,4 @@
-create database CW2;
+create database CW1;
 
 -- --------------CREATING TABLES -----------------------------
 CREATE TABLE Trails (

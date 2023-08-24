@@ -1,4 +1,4 @@
-create database CW1;
+create database REFER;
 
 -- --------------CREATING TABLES -----------------------------
 CREATE TABLE Trails (
